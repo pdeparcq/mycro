@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>Televic.Mycro</id>
+    <version>$version$</version>
+    <title>$title$</title>
+    <authors>pdeparcq</authors>
+    <owners>pdeparcq</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Light-weight framework for building micro services</description>
+    <releaseNotes>First release</releaseNotes>
+    <copyright>Copyright 2017</copyright>
+    <tags>framework micro services</tags>
+  </metadata>
+</package>
