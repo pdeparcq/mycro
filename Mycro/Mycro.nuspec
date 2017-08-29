@@ -6,10 +6,11 @@
     <title>$title$</title>
     <authors>pdeparcq</authors>
     <owners>pdeparcq</owners>
+    <projectUrl>https://github.com/pdeparcq/mycro</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Light-weight framework for building micro services</description>
     <releaseNotes>First release</releaseNotes>
     <copyright>Copyright 2017</copyright>
-    <tags>framework micro services</tags>
+    <tags>framework micro services ddd</tags>
   </metadata>
 </package>
