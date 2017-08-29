@@ -63,33 +63,17 @@ This is it! You should now be able to run your application and see some logging.
 ASP .NET WebApi controllers are automatically detected. Here is an example that allows us to store and retrieve customers to and from the database. Let's create a simple customer model class first:
 
 ``` csharp
-using System.Collections.Generic;
-using System.Web.Http;
-using LiteDB;
+using System.ComponentModel.DataAnnotations;
 
 namespace Mycro.Sample.Console.Customers
 {
-    public class CustomersController : ApiController
+    public class CustomerModel
     {
-        private readonly LiteRepository _repository;
+        [Required(AllowEmptyStrings = false)]
+        public string FirstName { get; set; }
 
-        public CustomersController(LiteRepository repository)
-        {
-            _repository = repository;
-        }
-
-        [HttpGet]
-        public IEnumerable<CustomerModel> GetAllCustomers()
-        {
-            return _repository.Query<CustomerModel>().ToEnumerable();
-        }
-
-        [HttpPost]
-        public void AddCustomer(CustomerModel model)
-        {
-            if (ModelState.IsValid)
-                _repository.Insert(model);
-        }
+        [Required(AllowEmptyStrings = false)]
+        public string LastName { get; set; }
     }
 }
 ```
