@@ -95,8 +95,9 @@ namespace Televic.Mycro.Web
         private void ConfigureWebApi(IAppBuilder appBuilder)
         {
             var config = new HttpConfiguration { DependencyResolver = new AutofacWebApiDependencyResolver(_container) };
-            ConfigureJsonFormatting(config);
+            config.Routes.MapHttpRoute("API Default", "api/{controller}/{id}", new { id = RouteParameter.Optional });
             config.MapHttpAttributeRoutes();
+            ConfigureJsonFormatting(config);
             config.EnableSwagger(c => ConfigureSwagger(c)).EnableSwaggerUi();       
             appBuilder.UseWebApi(config);
         }
