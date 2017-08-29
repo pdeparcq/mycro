@@ -26,6 +26,7 @@ namespace Televic.Mycro.Web
             catch (Exception e)
             {
                 Logger.Error(e, "Starting server failed");
+                throw;
             }
         }
 

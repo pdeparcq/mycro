@@ -4,13 +4,19 @@ using System.Net.Http.Formatting;
 using System.Web.Http;
 using Autofac;
 using Autofac.Integration.WebApi;
+using Common.Logging.Configuration;
+using Common.Logging.NLog;
 using CQRSlite.Config;
 using LiteDB;
 using Microsoft.AspNet.SignalR;
 using Microsoft.Owin.Cors;
+using Microsoft.Owin.Host.HttpListener;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
+using NLog;
+using NLog.Config;
+using NLog.Targets;
 using Owin;
 using Quartz;
 using Quartz.Impl;
@@ -27,6 +33,8 @@ namespace Televic.Mycro.Web
 
         public void Configuration(IAppBuilder appBuilder)
         {
+            ReferenceDummyTypes();
+            ConfigureDefaultLogging();
             appBuilder.UseCors(CorsOptions.AllowAll);
             appBuilder.MapSignalR();
             ConfigureDependencyInjection(appBuilder);
@@ -117,10 +125,44 @@ namespace Televic.Mycro.Web
 
         protected virtual void ScheduleJobs(IScheduler scheduler) { }
 
-        protected virtual string ConnectionString => ConfigurationManager.ConnectionStrings[$"{ApplicationName}DB"].ConnectionString;
+        protected virtual string ConnectionString
+        {
+            get
+            {
+                var connectionString = ConfigurationManager.ConnectionStrings[$"{ApplicationName}DB"];
+                return connectionString != null ? connectionString.ConnectionString : "Filename=database.db";
+            }
+        }
+
         protected virtual InfoBuilder ConfigureSwagger(SwaggerDocsConfig c)
         {
             return c.SingleApiVersion("v1", $"{ApplicationName} REST API");
+        }
+
+        private void ConfigureDefaultLogging()
+        {
+            if (LogManager.Configuration == null)
+            {
+                //NLog
+                var config = new LoggingConfiguration();
+                var consoleTarget = new ColoredConsoleTarget
+                {
+                    Layout = @"${longdate} ${uppercase:${level}} ${message} ${exception:format=ToString}"
+                };
+                config.AddTarget("console", consoleTarget);
+                config.LoggingRules.Add(new LoggingRule("*", LogLevel.Debug, consoleTarget));
+
+                LogManager.Configuration = config;
+
+                //Common.Logging
+                Common.Logging.LogManager.Adapter = new NLogLoggerFactoryAdapter(new NameValueCollection { ["configType"] = "INLINE" });
+            }
+        }
+
+        private static void ReferenceDummyTypes()
+        {
+            //avoid need to reference owin.host.httplistener nuget package from consuming side
+            var dummyType = typeof(OwinHttpListener);
         }
     }
 }

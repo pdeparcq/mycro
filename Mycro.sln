@@ -5,6 +5,10 @@ VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mycro", "Mycro\Mycro.csproj", "{428F1466-8B28-49FA-88D1-F45584B3E007}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{444ED631-EC8B-4D30-B860-35A66BB1E838}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mycro.Sample.Console", "Mycro.Sample.Console\Mycro.Sample.Console.csproj", "{0D1D94C7-B5AD-4E82-8F4D-37B29703802C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,8 +19,15 @@ Global
 		{428F1466-8B28-49FA-88D1-F45584B3E007}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{428F1466-8B28-49FA-88D1-F45584B3E007}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{428F1466-8B28-49FA-88D1-F45584B3E007}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0D1D94C7-B5AD-4E82-8F4D-37B29703802C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0D1D94C7-B5AD-4E82-8F4D-37B29703802C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0D1D94C7-B5AD-4E82-8F4D-37B29703802C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0D1D94C7-B5AD-4E82-8F4D-37B29703802C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{0D1D94C7-B5AD-4E82-8F4D-37B29703802C} = {444ED631-EC8B-4D30-B860-35A66BB1E838}
 	EndGlobalSection
 EndGlobal
