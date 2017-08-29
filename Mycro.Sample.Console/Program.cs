@@ -7,7 +7,6 @@ namespace Mycro.Sample.Console
         static void Main(string[] args)
         {
             new Server<SampleStartup>().Start();
-            System.Console.ReadLine();
         }
     }
 }

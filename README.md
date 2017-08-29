@@ -27,16 +27,14 @@ PM> Install-Package Televic.Mycro
 
 Create a new class derived from the framework Startup class
 
-
 ``` csharp
 using Televic.Mycro.Web;
 
-namespace TestMycro
+namespace Mycro.Sample.Console
 {
-    public class TestStartup : Startup
+    public class SampleStartup : Startup
     {
-        //By default application name will be same as Assembly name, so this is optional
-        protected override string ApplicationName => "MyTestApp";
+        protected override string ApplicationName => "Sample";
     }
 }
 ```
@@ -46,13 +44,13 @@ Now use this startup class in your application to start the service. Here is an 
 ``` csharp
 using Televic.Mycro.Web;
 
-namespace TestMycro
+namespace Mycro.Sample.Console
 {
     class Program
     {
         static void Main(string[] args)
         {
-            new Server<TestStartup>().Start();
+            new Server<SampleStartup>().Start();
         }
     }
 }
@@ -62,53 +60,72 @@ This is it! You should now be able to run your application and see some logging.
 
 ## Adding an API controller using LiteDB
 
-ASP .NET WebApi controllers are automatically detected. Here is an example that allows us to store and retrieve customers to and from the database:
+ASP .NET WebApi controllers are automatically detected. Here is an example that allows us to store and retrieve customers to and from the database. Let's create a simple customer model class first:
 
 ``` csharp
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Web.Http;
 using LiteDB;
 
-namespace TestMycro
+namespace Mycro.Sample.Console.Customers
 {
-    //This is a dummy customer model for demo purposes with some data annotations for validation
-    public class CustomerModel
-    {
-        [Required(AllowEmptyStrings = false)]
-        public string FirstName { get; set; }
-
-        [Required(AllowEmptyStrings = false)]
-        public string LastName { get; set; }
-    }
-
-    [RoutePrefix("api/customers")]
     public class CustomersController : ApiController
     {
         private readonly LiteRepository _repository;
 
-        //LiteDB Repository will be automatically injected by AutoFac dependency injection framework
         public CustomersController(LiteRepository repository)
         {
             _repository = repository;
         }
 
         [HttpGet]
-        [Route("")]
         public IEnumerable<CustomerModel> GetAllCustomers()
         {
             return _repository.Query<CustomerModel>().ToEnumerable();
         }
 
         [HttpPost]
-        [Route("")]
         public void AddCustomer(CustomerModel model)
         {
-            if(ModelState.IsValid)
+            if (ModelState.IsValid)
                 _repository.Insert(model);
         }
     }
 }
 ```
-Now you should be able to test your new api using the swagger ui. By default the application will look for a connectionstring with name {ApplicationName}DB (in this case MyTestAppDB). If not found a default connection string will be used with database.db as filename for database.
+
+And now create a web api controller:
+
+``` csharp
+using System.Collections.Generic;
+using System.Web.Http;
+using LiteDB;
+
+namespace Mycro.Sample.Console.Customers
+{
+    public class CustomersController : ApiController
+    {
+        private readonly LiteRepository _repository;
+
+        public CustomersController(LiteRepository repository)
+        {
+            _repository = repository;
+        }
+
+        [HttpGet]
+        public IEnumerable<CustomerModel> GetAllCustomers()
+        {
+            return _repository.Query<CustomerModel>().ToEnumerable();
+        }
+
+        [HttpPost]
+        public void AddCustomer(CustomerModel model)
+        {
+            if (ModelState.IsValid)
+                _repository.Insert(model);
+        }
+    }
+}
+```
+Now you should be able to test your new api using the swagger ui. By default the application will look for a connectionstring with name {ApplicationName}DB (in this case SampleDB). If not found a default connection string will be used with database.db as filename for database.
 
