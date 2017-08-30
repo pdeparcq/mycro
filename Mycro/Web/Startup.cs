@@ -22,6 +22,7 @@ using Quartz;
 using Quartz.Impl;
 using Swashbuckle.Application;
 using Televic.Mycro.Bus;
+using Televic.Mycro.Documents;
 using Televic.Mycro.Notification;
 using Televic.Mycro.Scheduling;
 
@@ -84,6 +85,7 @@ namespace Televic.Mycro.Web
                 .Where(t => t.Name.EndsWith("Handler"))
                 .AsSelf()
                 .InstancePerLifetimeScope();
+            builder.RegisterApiControllers(typeof(DocumentsController).Assembly);
             builder.RegisterApiControllers(ApplicationAssemblyType.Assembly);
             builder.RegisterAssemblyModules(ApplicationAssemblyType.Assembly);
             builder.RegisterInstance(new StdSchedulerFactory().GetScheduler()).As<IScheduler>();
@@ -94,9 +96,9 @@ namespace Televic.Mycro.Web
 
         private void ConfigureWebApi(IAppBuilder appBuilder)
         {
-            var config = new HttpConfiguration { DependencyResolver = new AutofacWebApiDependencyResolver(_container) };
-            config.Routes.MapHttpRoute("API Default", "api/{controller}/{id}", new { id = RouteParameter.Optional });
+            var config = new HttpConfiguration { DependencyResolver = new AutofacWebApiDependencyResolver(_container) }; 
             config.MapHttpAttributeRoutes();
+            config.Routes.MapHttpRoute("API Default", "api/{controller}/{id}", new { id = RouteParameter.Optional });
             ConfigureJsonFormatting(config);
             config.EnableSwagger(c => ConfigureSwagger(c)).EnableSwaggerUi();       
             appBuilder.UseWebApi(config);
@@ -137,6 +139,7 @@ namespace Televic.Mycro.Web
 
         protected virtual InfoBuilder ConfigureSwagger(SwaggerDocsConfig c)
         {
+            c.OperationFilter<ImportFileParamType>();
             return c.SingleApiVersion("v1", $"{ApplicationName} REST API");
         }
 

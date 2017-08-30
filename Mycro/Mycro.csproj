@@ -134,6 +134,7 @@
       <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.5.2.3\lib\net45\System.Net.Http.Formatting.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="System.Web" />
     <Reference Include="System.Web.Cors, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.Cors.5.2.3\lib\net45\System.Web.Cors.dll</HintPath>
       <Private>True</Private>
@@ -170,9 +171,12 @@
     <Compile Include="Scheduling\AutofacJobFactory.cs" />
     <Compile Include="Web\AppBuilderExtensions.cs" />
     <Compile Include="Web\CustomNancyBootstrapper.cs" />
+    <Compile Include="Documents\DocumentsController.cs" />
+    <Compile Include="Documents\ImportFileParamType.cs" />
     <Compile Include="Web\RootNancyModule.cs" />
     <Compile Include="Web\Server.cs" />
     <Compile Include="Web\Startup.cs" />
+    <Compile Include="Documents\SwaggerFormAttribute.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
