@@ -173,6 +173,7 @@
     <Compile Include="Web\CustomNancyBootstrapper.cs" />
     <Compile Include="Documents\DocumentsController.cs" />
     <Compile Include="Documents\ImportFileParamType.cs" />
+    <Compile Include="Web\EnumExtensions.cs" />
     <Compile Include="Web\IStartup.cs" />
     <Compile Include="Web\RootNancyModule.cs" />
     <Compile Include="Web\Server.cs" />
