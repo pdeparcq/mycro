@@ -1,14 +1,16 @@
 ﻿using System;
+using Autofac;
 using Microsoft.Owin.Hosting;
 using NLog;
+using Quartz;
 
 namespace Televic.Mycro.Web
 {
-    public class Server<T>
+    public class Server<T> where T : class, IStartup
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         private readonly string _hostUrl;
-        private IDisposable _app;
+        private IContainer _container;
 
         public Server(string hostUrl = "http://localhost:9000")
         {
@@ -20,8 +22,13 @@ namespace Televic.Mycro.Web
             Logger.Info($"Starting server at {_hostUrl}");
             try
             {
-                _app = WebApp.Start<T>(_hostUrl);
+                var startup = Activator.CreateInstance(typeof(T)) as IStartup;
+                if(startup == null) throw new ApplicationException("Failed to create startup instance!");
+                WebApp.Start(_hostUrl, builder => startup.Configure(builder));
+                _container = startup.Container;
+                _container.Resolve<IScheduler>().Start();
                 Logger.Info("Server successfully started!");
+                OnStarted(startup.Container);
             }
             catch (Exception e)
             {
@@ -30,9 +37,15 @@ namespace Televic.Mycro.Web
             }
         }
 
+        public virtual void OnStarted(IContainer container) { }
+
+        public virtual void OnStopping(IContainer container) { }
+
         public void Stop()
         {
-            _app?.Dispose();
+            Logger.Info("Stopping server");
+            OnStopping(_container);
+            _container.Resolve<IScheduler>().Shutdown();
         }
     }
 }

@@ -28,11 +28,11 @@ using Televic.Mycro.Scheduling;
 
 namespace Televic.Mycro.Web
 {
-    public abstract class Startup
+    public abstract class Startup : IStartup
     {
         private IContainer _container;
 
-        public void Configuration(IAppBuilder appBuilder)
+        public void Configure(IAppBuilder appBuilder)
         {
             ReferenceDummyTypes();
             ConfigureDefaultLogging();
@@ -42,16 +42,14 @@ namespace Televic.Mycro.Web
             ConfigureMessageBus();
             ConfigureWebApi(appBuilder);
             ConfigureNancy(appBuilder);
-            StartScheduler(appBuilder);
+            ConfigureScheduler();
         }
 
-        private void StartScheduler(IAppBuilder appBuilder)
+        private void ConfigureScheduler()
         {
             var scheduler = _container.Resolve<IScheduler>();
             scheduler.JobFactory = new AutofacJobFactory(_container);
             ScheduleJobs(scheduler);
-            scheduler.Start();
-            appBuilder.OnDisposing(() => scheduler.Shutdown());
         }
 
         private static void ConfigureNancy(IAppBuilder appBuilder)
@@ -108,7 +106,7 @@ namespace Televic.Mycro.Web
         {
             var defaultSettings = new JsonSerializerSettings
             {
-                Formatting = Formatting.Indented,
+                Formatting = Formatting.None,
                 ContractResolver = new CamelCasePropertyNamesContractResolver(),
                 Converters = new List<JsonConverter>
                 {
@@ -154,7 +152,7 @@ namespace Televic.Mycro.Web
                     Layout = @"${longdate} ${uppercase:${level}} ${message} ${exception:format=ToString}"
                 };
                 config.AddTarget("console", consoleTarget);
-                config.LoggingRules.Add(new LoggingRule("*", LogLevel.Debug, consoleTarget));
+                config.LoggingRules.Add(new LoggingRule("*", LogLevel.Trace, consoleTarget));
 
                 LogManager.Configuration = config;
 
@@ -168,5 +166,7 @@ namespace Televic.Mycro.Web
             //avoid need to reference owin.host.httplistener nuget package from consuming side
             var dummyType = typeof(OwinHttpListener);
         }
+
+        public IContainer Container => _container;
     }
 }
