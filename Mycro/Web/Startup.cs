@@ -9,6 +9,7 @@ using Common.Logging.NLog;
 using CQRSlite.Config;
 using LiteDB;
 using Microsoft.AspNet.SignalR;
+using Microsoft.Azure;
 using Microsoft.Owin.Cors;
 using Microsoft.Owin.Host.HttpListener;
 using Newtonsoft.Json;
@@ -126,14 +127,7 @@ namespace Televic.Mycro.Web
 
         protected virtual void ScheduleJobs(IScheduler scheduler) { }
 
-        protected virtual string ConnectionString
-        {
-            get
-            {
-                var connectionString = ConfigurationManager.ConnectionStrings[$"{ApplicationName}DB"];
-                return connectionString != null ? connectionString.ConnectionString : "Filename=database.db";
-            }
-        }
+        protected virtual string ConnectionString => CloudConfigurationManager.GetSetting($"{ApplicationName}DB") ?? "Filename=database.db";
 
         protected virtual InfoBuilder ConfigureSwagger(SwaggerDocsConfig c)
         {

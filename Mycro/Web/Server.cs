@@ -11,6 +11,7 @@ namespace Televic.Mycro.Web
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         private readonly string _hostUrl;
         private IContainer _container;
+        private IDisposable _app;
 
         public Server(string hostUrl = "http://localhost:9000")
         {
@@ -24,7 +25,7 @@ namespace Televic.Mycro.Web
             {
                 var startup = Activator.CreateInstance(typeof(T)) as IStartup;
                 if(startup == null) throw new ApplicationException("Failed to create startup instance!");
-                WebApp.Start(_hostUrl, builder => startup.Configure(builder));
+                _app = WebApp.Start(_hostUrl, builder => startup.Configure(builder));
                 _container = startup.Container;
                 _container.Resolve<IScheduler>().Start();
                 Logger.Info("Server successfully started!");
@@ -46,6 +47,7 @@ namespace Televic.Mycro.Web
             Logger.Info("Stopping server");
             OnStopping(_container);
             _container.Resolve<IScheduler>().Shutdown();
+            _app.Dispose();
         }
     }
 }
