@@ -36,18 +36,23 @@ namespace Televic.Mycro.Bus
 
         public void RegisterHandler<T>(Func<T, CancellationToken, Task> handler) where T : class, IMessage
         {
-            _bus.Subscribe(async (T message) =>
+            _bus.Subscribe((T message) =>
             {
-                try
-                {
-                    Logger.Info($"Handling {message}: {JsonConvert.SerializeObject(message)}");
-                    await handler(message, new CancellationToken());
-                }
-                catch (Exception e)
-                {
-                    Logger.Error(e);
-                }
+                ExecuteHandler(handler, message).Wait();
             });
+        }
+
+        private static async Task ExecuteHandler<T>(Func<T, CancellationToken, Task> handler, T message) where T : class, IMessage
+        {
+            try
+            {
+                Logger.Info($"Handling {message}: {JsonConvert.SerializeObject(message)}");
+                await handler(message, new CancellationToken());
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e);
+            }
         }
     }
 }
