@@ -26,12 +26,14 @@ namespace Televic.Mycro.Bus
 
         public async Task Send<T>(T command, CancellationToken cancellationToken = new CancellationToken()) where T : class, ICommand
         {
-            await _bus.PublishAsync(command);
+            _bus.Publish(command);
+            await Task.CompletedTask;
         }
 
         public async Task Publish<T>(T @event, CancellationToken cancellationToken = new CancellationToken()) where T : class, IEvent
-        {   
-            await _bus.PublishAsync(@event);
+        {
+            _bus.Publish(@event);
+            await Task.CompletedTask;
         }
 
         public void RegisterHandler<T>(Func<T, CancellationToken, Task> handler) where T : class, IMessage
